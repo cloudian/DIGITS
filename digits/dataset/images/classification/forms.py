@@ -373,28 +373,28 @@ class ImageClassificationDatasetForm(ImageDatasetForm):
     # Method - S3
     #
 
-    s3_train_endpoint = utils.forms.StringField(
+    s3_endpoint = utils.forms.StringField(
         u'Training Images',
         tooltip=('S3 end point URL'),
     )
 
-    s3_train_bucket = utils.forms.StringField(
+    s3_bucket = utils.forms.StringField(
         u'Bucket Name',
         tooltip=('bucket name'),
     )
 
-    s3_train_path = utils.forms.StringField(
+    s3_path = utils.forms.StringField(
         u'Training Images Path',
         tooltip=('Indicate a path which holds subfolders full of images. '
                  'Each subfolder should be named according to the desired label for the images that it holds. '),
     )
 
-    s3_train_accesskey = utils.forms.StringField(
+    s3_accesskey = utils.forms.StringField(
         u'Access Key',
         tooltip=('Access Key to access this S3 End Point'),
     )
 
-    s3_train_secretkey = utils.forms.StringField(
+    s3_secretkey = utils.forms.StringField(
         u'Secret Key',
         tooltip=('Secret Key to access this S3 End Point'),
     )
