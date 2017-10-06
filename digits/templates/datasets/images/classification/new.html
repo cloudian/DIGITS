@@ -338,7 +338,7 @@ hasTestFolderChanged();
                     <div class="form-group{{mark_errors([form.s3_secretkey])}}">
                         {{ form.s3_secretkey.label }}
                         {{ form.s3_secretkey.tooltip }}
-                        {{ form.s3_secretkey(class='form-control', placeholder='S3 Secret Key')}}
+                        {{ form.s3_secretkey(class='form-control', placeholder='S3 Secret Key'), type='password'}}
                     </div>
                     <div class="row">
                         <div class="col-sm-10 col-sm-offset-1">
