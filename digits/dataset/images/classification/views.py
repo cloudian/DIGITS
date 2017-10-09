@@ -281,6 +281,8 @@ def from_s3(job, form):
     min_per_class = form.s3_train_min_per_class.data
     max_per_class = form.s3_train_max_per_class.data
 
+    keep_copies = form.s3_keepcopiesondisk.data
+
     parse_train_task = tasks.ParseS3Task(
         job_dir=job.dir(),
         s3_endpoint=form.s3_endpoint.data,
@@ -318,6 +320,7 @@ def from_s3(job, form):
             compression=compression,
             mean_file=utils.constants.MEAN_FILE_CAFFE,
             labels_file=job.labels_file,
+            keep_copies=keep_copies,
         )
     )
 
@@ -334,6 +337,7 @@ def from_s3(job, form):
                 encoding=encoding,
                 compression=compression,
                 labels_file=job.labels_file,
+		keep_copies=keep_copies,
             )
         )
 
@@ -350,6 +354,7 @@ def from_s3(job, form):
                 encoding=encoding,
                 compression=compression,
                 labels_file=job.labels_file,
+		keep_copies=keep_copies,
             )
         )
 

@@ -216,6 +216,7 @@ def create_db(input_file, output_dir,
               image_folder=None,
               shuffle=True,
               mean_files=None,
+              keep_copies=True,
               **kwargs):
     """
     Create a database of images from a list of image paths
@@ -304,6 +305,11 @@ def create_db(input_file, output_dir,
                      mean_files, **kwargs)
     else:
         raise ValueError('invalid backend')
+
+    logger.info('Keep copies = ', keep_copies)
+    if not keep_copies:
+        # delete files
+        pass
 
     logger.info('Database created after %d seconds.' % (time.time() - start))
 
@@ -908,6 +914,10 @@ if __name__ == '__main__':
                         type=int,
                         default=2**31,
                         help='The size limit for HDF5 datasets')
+    parser.add_argument('--keep_copies',
+                        type=bool,
+                        default=True,
+                        help='Specifies whether to keep files after creation of dataset')
 
     args = vars(parser.parse_args())
 
