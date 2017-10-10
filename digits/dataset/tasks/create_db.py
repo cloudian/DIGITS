@@ -43,7 +43,7 @@ class CreateDbTask(Task):
         self.compression = kwargs.pop('compression', None)
         self.mean_file = kwargs.pop('mean_file', None)
         self.labels_file = kwargs.pop('labels_file', None)
-	self.keep_copies = kwargs.pop('keep_copies', True)
+	self.delete_files = kwargs.pop('delete_files', False)
 
         super(CreateDbTask, self).__init__(**kwargs)
         self.pickver_task_createdb = PICKLE_VERSION
@@ -174,8 +174,8 @@ class CreateDbTask(Task):
             args.append('--compression=%s' % self.compression)
         if self.backend == 'hdf5':
             args.append('--hdf5_dset_limit=%d' % 2**31)
-	if self.keep_copies is not None:
-            args.append('--keep_copies=%s' % self.keep_copies)
+	if self.delete_files is not None and self.delete_files is True:
+            args.append('--delete_files')
 
         return args
 
