@@ -13,7 +13,6 @@ import shutil
 import sys
 import threading
 import time
-import distutils.util
 
 # Find the best implementation available
 try:
@@ -936,7 +935,6 @@ if __name__ == '__main__':
         # convert from MB to B
         args['lmdb_map_size'] <<= 20
 
-    logger.info("Delete files " + str(args['delete_files']))
     try:
         create_db(args['input_file'], args['output_dir'],
                   args['width'], args['height'], args['channels'],
