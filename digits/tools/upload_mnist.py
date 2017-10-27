@@ -3,11 +3,15 @@
 
 import sys
 import os
+import ConfigParser
 from s3_walker import S3Walker
 
-endpoint = 'http://s3-tokyo.s3.cloudian.jp:80'
-accesskey = '206ed442e8f43e105d4b'
-secretkey = 'uzozrfZJPZvq3/k28hZLfMz0FCHvCze0rRzsIPC9'
+config = ConfigParser.RawConfigParser()
+config.read('upload_config.cfg')
+endpoint = config.get('S3 Config', 'endpoint')
+accesskey = config.get('S3 Config', 'accesskey')
+secretkey = config.get('S3 Config', 'secretkey')
+
 bucket = 'digits'
 path_prefix = 'mnist/'
 
