@@ -25,9 +25,8 @@ def unescape(s):
     return urllib.unquote(s)
 
 
-def validate_s3(endpoint, bucket, path, accesskey, secretkey):
+def validate_s3(walker, bucket, path):
     try:
-        walker = S3Walker(endpoint, accesskey, secretkey)
         walker.connect()
         if not path.endswith('/'):
             path = path + '/'
@@ -279,7 +278,7 @@ def three_way_split_indices(size, pct_b, pct_c):
         return a, a + b
 
 
-def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
+def parse_s3(walker, bucket, path, labels_file,
                  train_file=None, percent_train=None,
                  val_file=None, percent_val=None,
                  test_file=None, percent_test=None,
@@ -291,11 +290,9 @@ def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
     Returns True on success
 
     Arguments:
-    endpoint -- endpoint url
+    walker -- S3Walker object
     bucket -- bucekt name
     path -- a path to images
-    accesskey -- accesskey
-    secretkey -- secretkey
     labels_file -- file for labels
 
     Keyword Arguments:
@@ -312,7 +309,6 @@ def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
     labels = []
 
     # Read the labels from labels_file
-
     if not create_labels:
         with open(labels_file) as infile:
             for line in infile:
@@ -321,12 +317,12 @@ def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
                     labels.append(line)
 
     # Verify that at least two category folders exist
-    walker = S3Walker(endpoint, accesskey, secretkey)
     walker.connect()
     if not path.endswith('/'):
         path = path + '/'
     subdirs = []
     digits = walker.listbucket(bucket, prefix=path, with_prefix=True)
+    print len(digits)
     for digit in digits:
         subdirs.append(digit[len(path):])
 
@@ -337,7 +333,6 @@ def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
         return False
 
     # Parse the folder
-
     train_count = 0
     val_count = 0
     test_count = 0
@@ -348,6 +343,7 @@ def parse_s3(endpoint, bucket, path, accesskey, secretkey, labels_file,
         val_outfile = open(val_file, 'w')
     if percent_test:
         test_outfile = open(test_file, 'w')
+
 
     subdir_index = 0
     label_index = 0
@@ -521,9 +517,9 @@ if __name__ == '__main__':
     )
 
     args = vars(parser.parse_args())
-
+    walker = S3Walker(args['endpoint'], args['accesskey'], args['secretkey'])
     for valid in [
-            validate_s3(args['endpoint'], args['bucket'], args['path'], args['accesskey'], args['secretkey']),
+            validate_s3(walker, args['bucket'], args['path']),
             validate_range(args['percent_train'],
                            min_value=0, max_value=100, allow_none=True),
             validate_output_file(args['train_file']),
@@ -547,7 +543,8 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    if parse_s3(args['endpoint'], args['bucket'], args['path'], args['accesskey'], args['secretkey'], args['labels_file'],
+    
+    if parse_s3(walker, args['bucket'], args['path'], args['labels_file'],
                     train_file=args['train_file'],
                     percent_train=percent_train,
                     val_file=args['val_file'],

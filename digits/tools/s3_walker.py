@@ -6,7 +6,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 
-class S3Walker:
+class S3Walker(object):
 
     def __init__(self, endpoint, accesskey, secretkey):
         self.is_secure = endpoint.find('https://') > -1
