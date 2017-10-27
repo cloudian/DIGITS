@@ -311,3 +311,11 @@ class TestParseS3():
             parsed_classes = [line.strip() for line in infile]
             expected_classes = [str(i) for i in classes]
             assert parsed_classes == expected_classes, '%s != %s' % (parsed_classes, classes)
+            
+    def test_neg_all_train(self):
+        classes = range(1)
+        mock_walker = MockS3Walker(classes)
+        tmpdir = tempfile.mkdtemp()
+        labels_file = tempfile.mkstemp(dir=tmpdir)
+        train_file = tempfile.mkstemp(dir=tmpdir)
+        assert not parse_s3.parse_s3(mock_walker, 'invalidbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)

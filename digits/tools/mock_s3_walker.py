@@ -16,6 +16,12 @@ class MockS3Walker(S3Walker):
                 for j in range(1, 10):
                     data.append(prefix+str(i)+'/image'+str(j)+'.png')
         self.s3_dict['validbucket'] = data
+        
+        invalid_data = []
+        for i in classes:
+            for j in range(1,10):
+                invalid_data.append('train/'+str(i)+'/image'+str(j)+'.png')
+        self.s3_dict['invalidbucket'] = invalid_data
 
     # performs connection #
     def connect(self):
