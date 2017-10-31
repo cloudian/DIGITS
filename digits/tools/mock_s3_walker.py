@@ -6,7 +6,6 @@ class MockS3Walker(S3Walker):
 
     def __init__(self, classes=range(10)): #, endpoint, accesskey, secretkey):
         #super(MockS3Walker, self).__init__(endpoint, accesskey, secretkey)
-        self.is_connected = False
         self.s3_dict = {}
         self.s3_dict['emptybucket'] = []
 
@@ -16,19 +15,23 @@ class MockS3Walker(S3Walker):
                 for j in range(1, 10):
                     data.append(prefix+str(i)+'/image'+str(j)+'.png')
         self.s3_dict['validbucket'] = data
+        
+        invalid_data = []
+        for i in classes:
+            for j in range(1,10):
+                invalid_data.append('train/'+str(i)+'/image'+str(j)+'.png')
+        self.s3_dict['invalidbucket'] = invalid_data
 
-    # performs connection #
+    # not needed #
     def connect(self):
-        self.is_connected = True
+        pass
 
-    # returns HEAD for specified key#
+    # not needed #
     def head(self, bucket, key):
-        return Key()
+        pass
 
-    # gets key and writes it to filename #
+    # not needed #
     def get(self, bucket, key, filename):
-        #with open(filename, 'wb' as fp:
-        #    fp.write('info')
         pass
 
     # not needed #
@@ -43,7 +46,7 @@ class MockS3Walker(S3Walker):
     def put(self, bucket, key, filename):
         pass
 
-    # lists keys for specified bucket #
+    # not needed #
     def listbucket(self, bucket, prefix='', max_size=1000, marker='', with_prefix=False):
         if len(self.s3_dict[bucket]) == 0:
             raise Exception('No keys in specified bucket')

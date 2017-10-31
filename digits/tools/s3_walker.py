@@ -43,7 +43,7 @@ class S3Walker(object):
         k.get_contents_to_filename(filename)
 
     def get_as_string(self, bucket, key):
-        k = head(bucket, key)
+        k = self.head(bucket, key)
         return k.get_contents_as_string()
 
     def get_meta(self, bucket, key, meta):

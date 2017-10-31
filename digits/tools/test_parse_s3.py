@@ -10,8 +10,13 @@ from nose.tools import raises, assert_raises
 import numpy as np
 import PIL.Image
 
-from . import parse_s3
-from digits.tools.mock_s3_walker import MockS3Walker
+try:
+    from . import parse_s3
+    from digits.tools.mock_s3_walker import MockS3Walker
+    import_failed = False
+except:
+    import_failed = True
+
 from digits import test_utils
 
 
@@ -19,6 +24,11 @@ test_utils.skipIfNotFramework('none')
 
 
 class TestUnescape():
+
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
 
     def test_hello(self):
         assert parse_s3.unescape('hello') == 'hello'
@@ -30,6 +40,8 @@ class TestValidateS3():
 
     @classmethod
     def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
         cls.mock_walker = MockS3Walker()
 
     def test_non_existent_bucket(self):
@@ -51,6 +63,8 @@ class TestValidateOutputFile():
 
     @classmethod
     def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
         cls.tmpdir = tempfile.mkdtemp()
         _handle, cls.tmpfile = tempfile.mkstemp(dir=cls.tmpdir)
 
@@ -93,6 +107,8 @@ class TestValidateInputFile():
 
     @classmethod
     def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
         _handle, cls.tmpfile = tempfile.mkstemp()
         os.close(_handle)
 
@@ -110,6 +126,11 @@ class TestValidateInputFile():
 
 
 class TestValidateRange():
+
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
 
     def test_no_range(self):
         assert parse_s3.validate_range(0) is True
@@ -145,6 +166,11 @@ class TestValidateRange():
 @mock.patch('digits.tools.parse_s3.validate_output_file')
 @mock.patch('digits.tools.parse_s3.validate_input_file')
 class TestCalculatePercentages():
+
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
 
     @raises(AssertionError)
     def test_making_0(self, mock_input, mock_output):
@@ -226,6 +252,11 @@ class TestCalculatePercentages():
 
 class TestParseWebListing():
 
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
+
     def test_non_url(self):
         for url in ['not-a-url', 'http://not-a-url', 'https://not-a-url']:
             yield self.check_url_raises, url
@@ -281,6 +312,11 @@ class TestParseWebListing():
 
 class TestSplitIndices():
 
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
+
     def test_indices(self):
         for size in [5, 22, 32]:
             for percent_b in range(0, 100, 31):
@@ -298,16 +334,35 @@ class TestSplitIndices():
 
 class TestParseS3():
 
+    @classmethod
+    def setUpClass(cls):
+        if import_failed:
+            test_utils.skipTest('Could not import parse_s3, most likely cause is Boto not installed')
+
     def test_all_train(self):
         classes = range(10)
         mock_walker = MockS3Walker(classes)
-        tmpdir = tempfile.mkdtemp()
-        labels_file = tempfile.mkstemp(dir=tmpdir)
-        train_file = tempfile.mkstemp(dir=tmpdir)
+        try:
+            tmpdir = tempfile.mkdtemp()
+            labels_file = tempfile.mkstemp(dir=tmpdir)
+            train_file = tempfile.mkstemp(dir=tmpdir)
 
-        parse_s3.parse_s3(mock_walker, 'validbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
+            parse_s3.parse_s3(mock_walker, 'validbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
 
-        with open(labels_file[1]) as infile:
-            parsed_classes = [line.strip() for line in infile]
-            expected_classes = [str(i) for i in classes]
-            assert parsed_classes == expected_classes, '%s != %s' % (parsed_classes, classes)
+            with open(labels_file[1]) as infile:
+                parsed_classes = [line.strip() for line in infile]
+                expected_classes = [str(i) for i in classes]
+                assert parsed_classes == expected_classes, '%s != %s' % (parsed_classes, classes)
+        finally:
+            shutil.rmtree(tmpdir)
+            
+    def test_neg_all_train(self):
+        try:
+            classes = range(1)
+            mock_walker = MockS3Walker(classes)
+            tmpdir = tempfile.mkdtemp()
+            labels_file = tempfile.mkstemp(dir=tmpdir)
+            train_file = tempfile.mkstemp(dir=tmpdir)
+            assert not parse_s3.parse_s3(mock_walker, 'invalidbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
+        finally:
+            shutil.rmtree(tmpdir)
