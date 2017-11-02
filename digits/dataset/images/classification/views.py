@@ -263,6 +263,7 @@ def from_files(job, form):
             )
         )
 
+
 def from_s3(job, form):
     """
     Add tasks for creating a dataset by parsing s3s of images
@@ -336,7 +337,7 @@ def from_s3(job, form):
                 encoding=encoding,
                 compression=compression,
                 labels_file=job.labels_file,
-		delete_files=delete_files,
+                delete_files=delete_files,
             )
         )
 
@@ -353,7 +354,7 @@ def from_s3(job, form):
                 encoding=encoding,
                 compression=compression,
                 labels_file=job.labels_file,
-		delete_files=delete_files,
+                delete_files=delete_files,
             )
         )
 

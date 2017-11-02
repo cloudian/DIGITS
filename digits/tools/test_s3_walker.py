@@ -1,18 +1,22 @@
 # Copyright (c) 2014-2017, NVIDIA CORPORATION.  All rights reserved.
+from digits import test_utils
+import os.path
+import tempfile
+
 try:
     from s3_walker import S3Walker
     from boto.s3.bucket import Bucket
     from boto.s3.key import Key
-    from boto.s3.connection import S3Connection
     import_failed = False
-except:
-    import_failed = True 
+except ImportError:
+    import_failed = True
 
 global data, bucketData
 data = 'content'
 put_content = ''
 if not import_failed:
-    bucketData = [Key(name = 'key0') , Key(name = 'key1'), Key(name = 'key2')]
+    bucketData = [Key(name='key0'), Key(name='key1'), Key(name='key2')]
+
 
 def mock_get_bucket(bucketname):
     bucket = Bucket(bucketname)
@@ -20,20 +24,26 @@ def mock_get_bucket(bucketname):
     bucket.list = mock_list_bucket
     return bucket
 
+
 def mock_get_key(keyname):
     key = Key(name=keyname)
     key.set_contents_from_string('content')
     key.set_metadata('metadata_name', 'metadata_val')
     return key
 
+
 def mock_set_contents_from_string(self, content):
+    global data
     data = content
-    
+
+
 def mock_get_contents_as_string(self):
     return data
 
+
 def mock_list_bucket(prefix='', delimiter='', marker=''):
     return bucketData
+
 
 def mock_set_contents_from_filename(self, filename):
     file = open(filename, 'r')
@@ -43,7 +53,8 @@ def mock_set_contents_from_filename(self, filename):
     put_content = read
     print 'put_content= ' + put_content
     file.close()
-    
+
+
 if not import_failed:
     Key.set_contents_from_string = mock_set_contents_from_string
     Key.get_contents_as_string = mock_get_contents_as_string
@@ -51,14 +62,7 @@ if not import_failed:
     Bucket.list = mock_list_bucket
 
 
-from digits import test_utils
-import os.path
-import tempfile
-import shutil
-
-
 test_utils.skipIfNotFramework('none')
-
 
 
 class TestInit():
@@ -86,19 +90,19 @@ class TestInit():
         assert https_walker.host == 'endpoint.com'
         assert https_walker.port == 443
 
-
     def test_port(self):
         # Validate port is parsed properly
         walker = S3Walker('http://endpoint.com:81', 'accesskey', 'secretkey')
         assert walker.port == 81
-        
+
     def test_invalid_endpoint(self):
         # Validate exception is thrown for invalid endpoint (no http:// or https://)
         try:
-            walker = S3Walker('endpoint.com', 'accesskey', 'secretkey')
-        except:
+            S3Walker('endpoint.com', 'accesskey', 'secretkey')
+        except ValueError:
             return
         assert False
+
 
 class TestGetMethods():
 
@@ -109,9 +113,9 @@ class TestGetMethods():
         cls.walker = S3Walker('http://endpoint.com', 'accesskey', 'secretkey')
         cls.walker.connect()
         cls.walker.conn.get_bucket = mock_get_bucket
-        
+
     def test_head(self):
-        # test head operation to confirm S3Walker requests correct key to S3 endpoint      
+        # test head operation to confirm S3Walker requests correct key to S3 endpoint
         key = self.walker.head('bucket', 'key')
         assert key.name == 'key'
 
@@ -138,26 +142,25 @@ class TestGetMethods():
         for key in keys:
             assert key == 'key' + str(count)
             count += 1
-        
+
+
 class TestPut():
-    
-     @classmethod
-     def setUpClass(cls):
+
+    @classmethod
+    def setUpClass(cls):
         if import_failed:
             test_utils.skipTest('Could not import s3_walker, most likely cause is Boto not installed')
         cls.walker = S3Walker('http://endpoint.com', 'accesskey', 'secretkey')
         cls.walker.connect()
         cls.walker.conn.get_bucket = mock_get_bucket
-     
-     def test_put(self):
-         putData = tempfile.mkstemp()
-         file = open(putData[1], 'w')
-         expected_data = 'this the data for test put'
-         file.write(expected_data)
-         file.close()
-         self.walker.put('bucket', 'key', putData[1])
-         print 'put_content!! = ' + put_content
-         assert put_content == expected_data
-         os.remove(putData[1])
-             
-        
+
+    def test_put(self):
+        putData = tempfile.mkstemp()
+        file = open(putData[1], 'w')
+        expected_data = 'this the data for test put'
+        file.write(expected_data)
+        file.close()
+        self.walker.put('bucket', 'key', putData[1])
+        print 'put_content!! = ' + put_content
+        assert put_content == expected_data
+        os.remove(putData[1])

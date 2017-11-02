@@ -21,7 +21,7 @@ path_prefix = 'mnist/'
 # --- XXX.png
 try:
     mnist_folder = sys.argv[1]
-except:
+except IndexError:
     print('mnist folder should be passed')
     sys.exit(1)
 

@@ -130,7 +130,7 @@ class ParseS3Task(Task):
             'tools', 'parse_s3.py'),
             self.s3_endpoint,
             self.s3_bucket,
-            self.s3_path, 
+            self.s3_path,
             self.s3_accesskey,
             self.s3_secretkey,
             self.path(utils.constants.LABELS_FILE),

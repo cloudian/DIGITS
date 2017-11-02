@@ -9,8 +9,10 @@ import unittest
 
 from digits.config import config_value
 
+
 def skipTest(message):
     raise unittest.SkipTest(message)
+
 
 def skipIfNotFramework(framework):
     """

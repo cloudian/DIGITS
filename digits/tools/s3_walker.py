@@ -6,6 +6,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
 
+
 class S3Walker(object):
 
     def __init__(self, endpoint, accesskey, secretkey):
@@ -30,7 +31,8 @@ class S3Walker(object):
 
     def connect(self):
 
-        self.conn = S3Connection(aws_access_key_id=self.accesskey, aws_secret_access_key=self.secretkey, is_secure=self.is_secure, host=self.host, port=self.port)
+        self.conn = S3Connection(aws_access_key_id=self.accesskey, aws_secret_access_key=self.secretkey,
+                                 is_secure=self.is_secure, host=self.host, port=self.port)
 
     def head(self, bucket, key):
 
@@ -75,14 +77,13 @@ class S3Walker(object):
                 keys.append(key.key)
             elif isinstance(key, Prefix) and with_prefix:
                 keys.append(key.name)
-            #else:
-            #    print('ignoring non Key instance: ' + str(key))
             if len(keys) >= max_size:
                 break
 
         print('retrieved ' + str(len(keys)) + ' keys from ' + keys[0] + ' to ' + keys[-1])
 
         return keys
+
 
 if __name__ == "__main__":
 

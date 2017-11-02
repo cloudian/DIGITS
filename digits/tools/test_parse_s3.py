@@ -7,14 +7,12 @@ import tempfile
 
 import mock
 from nose.tools import raises, assert_raises
-import numpy as np
-import PIL.Image
 
 try:
     from . import parse_s3
     from digits.tools.mock_s3_walker import MockS3Walker
     import_failed = False
-except:
+except ImportError:
     import_failed = True
 
 from digits import test_utils
@@ -35,6 +33,7 @@ class TestUnescape():
 
     def test_space(self):
         assert parse_s3.unescape('%20') == ' '
+
 
 class TestValidateS3():
 
@@ -57,7 +56,7 @@ class TestValidateS3():
         result = parse_s3.validate_s3(self.mock_walker, 'validbucket', '')
         print result
         assert result
-        
+
 
 class TestValidateOutputFile():
 
@@ -72,7 +71,7 @@ class TestValidateOutputFile():
     def tearDownClass(cls):
         try:
             shutil.rmtree(cls.tmpdir)
-        except:
+        except IOError:
             pass
 
     def test_missing_file(self):
@@ -347,7 +346,8 @@ class TestParseS3():
             labels_file = tempfile.mkstemp(dir=tmpdir)
             train_file = tempfile.mkstemp(dir=tmpdir)
 
-            parse_s3.parse_s3(mock_walker, 'validbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
+            parse_s3.parse_s3(mock_walker, 'validbucket', 'train/', labels_file[1],
+                              percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
 
             with open(labels_file[1]) as infile:
                 parsed_classes = [line.strip() for line in infile]
@@ -355,7 +355,7 @@ class TestParseS3():
                 assert parsed_classes == expected_classes, '%s != %s' % (parsed_classes, classes)
         finally:
             shutil.rmtree(tmpdir)
-            
+
     def test_neg_all_train(self):
         try:
             classes = range(1)
@@ -363,6 +363,7 @@ class TestParseS3():
             tmpdir = tempfile.mkdtemp()
             labels_file = tempfile.mkstemp(dir=tmpdir)
             train_file = tempfile.mkstemp(dir=tmpdir)
-            assert not parse_s3.parse_s3(mock_walker, 'invalidbucket', 'train/', labels_file[1], percent_train=100, train_file=train_file[1], percent_val=0, percent_test=0)
+            assert not parse_s3.parse_s3(mock_walker, 'invalidbucket', 'train/', labels_file[1], percent_train=100,
+                                         train_file=train_file[1], percent_val=0, percent_test=0)
         finally:
             shutil.rmtree(tmpdir)

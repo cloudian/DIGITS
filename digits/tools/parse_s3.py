@@ -10,16 +10,16 @@ import re
 import sys
 import time
 import urllib
+from s3_walker import S3Walker
 
 # Add path for DIGITS package
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-import digits.config  # noqa
 from digits import utils, log  # noqa
 
 logger = logging.getLogger('digits.tools.parse_s3')
 
-from s3_walker import S3Walker
 local_prefix = 's3_tmp'
+
 
 def unescape(s):
     return urllib.unquote(s)
@@ -33,8 +33,8 @@ def validate_s3(walker, bucket, path):
         walker.head(bucket, path)
         digits = walker.listbucket(bucket, prefix=path, with_prefix=True)
         for digit in digits:
-            images = walker.listbucket(bucket, prefix=digit, max_size=10)
-    except:
+            walker.listbucket(bucket, prefix=digit, max_size=10)
+    except Exception:
         logger.exception('failed to validate s3: %s', str(sys.exc_info()[0]))
         return False
     return True
@@ -279,12 +279,11 @@ def three_way_split_indices(size, pct_b, pct_c):
 
 
 def parse_s3(walker, bucket, path, labels_file,
-                 train_file=None, percent_train=None,
-                 val_file=None, percent_val=None,
-                 test_file=None, percent_test=None,
-                 min_per_category=2,
-                 max_per_category=None,
-                 ):
+             train_file=None, percent_train=None,
+             val_file=None, percent_val=None,
+             test_file=None, percent_test=None,
+             min_per_category=2,
+             max_per_category=None):
     """
     Parses a folder of images into three textfiles
     Returns True on success
@@ -344,7 +343,6 @@ def parse_s3(walker, bucket, path, labels_file,
     if percent_test:
         test_outfile = open(test_file, 'w')
 
-
     subdir_index = 0
     label_index = 0
     for subdir in subdirs:
@@ -373,7 +371,6 @@ def parse_s3(walker, bucket, path, labels_file,
         lines = []
         # Read all images under the path
         max_size = 100
-        has_more = True
         files = walker.listbucket(bucket, prefix=path+subdir, max_size=max_size)
         for file in files:
             if file.lower().endswith(utils.image.SUPPORTED_EXTENSIONS):
@@ -543,17 +540,15 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    
     if parse_s3(walker, args['bucket'], args['path'], args['labels_file'],
-                    train_file=args['train_file'],
-                    percent_train=percent_train,
-                    val_file=args['val_file'],
-                    percent_val=percent_val,
-                    test_file=args['test_file'],
-                    percent_test=percent_test,
-                    min_per_category=args['min'],
-                    max_per_category=args['max'],
-                    ):
+                train_file=args['train_file'],
+                percent_train=percent_train,
+                val_file=args['val_file'],
+                percent_val=percent_val,
+                test_file=args['test_file'],
+                percent_test=percent_test,
+                min_per_category=args['min'],
+                max_per_category=args['max']):
         logger.info('Done after %d seconds.' % (time.time() - start_time))
         sys.exit(0)
     else:

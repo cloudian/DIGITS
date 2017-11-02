@@ -400,8 +400,8 @@ class ImageClassificationDatasetForm(ImageDatasetForm):
     )
 
     s3_keepcopiesondisk = utils.forms.BooleanField(
-	u'Keep Copies of Files on Disk',
-	tooltip=('Checking this box will keep raw files retrieved from S3 stored on disk after the job is completed'),
+        u'Keep Copies of Files on Disk',
+        tooltip=('Checking this box will keep raw files retrieved from S3 stored on disk after the job is completed'),
     )
 
     s3_pct_val = utils.forms.IntegerField(

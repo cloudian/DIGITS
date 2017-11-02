@@ -309,20 +309,19 @@ def create_db(input_file, output_dir,
 
     if delete_files:
         # delete files
-	deleted_files = 0
-	distribution = Counter()
-	with open(input_file) as infile:
-		for line in infile:
-			try:
-				# delete file
-				[path, label] = _parse_line(line, distribution)
-				os.remove(path)
-				deleted_files += 1
-        	        except ParseLineError:
-				pass
-		logger.info("Deleted " + str(deleted_files) + " files")
-
-    logger.info('Database created after %d seconds.' % (time.time() - start))
+        deleted_files = 0
+        distribution = Counter()
+        with open(input_file) as infile:
+            for line in infile:
+                try:
+                    # delete file
+                    [path, label] = _parse_line(line, distribution)
+                    os.remove(path)
+                    deleted_files += 1
+                except ParseLineError:
+                    pass
+                logger.info("Deleted " + str(deleted_files) + " files")
+        logger.info('Database created after %d seconds.' % (time.time() - start))
 
 
 def _create_tfrecords(image_count, write_queue, batch_size, output_dir,
