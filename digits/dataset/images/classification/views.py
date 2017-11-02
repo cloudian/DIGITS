@@ -264,7 +264,6 @@ def from_files(job, form):
         )
 
 def from_s3(job, form):
-    print('from_s3 in progress...')
     """
     Add tasks for creating a dataset by parsing s3s of images
     """

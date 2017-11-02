@@ -174,7 +174,7 @@ class CreateDbTask(Task):
             args.append('--compression=%s' % self.compression)
         if self.backend == 'hdf5':
             args.append('--hdf5_dset_limit=%d' % 2**31)
-	if self.delete_files is not None and self.delete_files is True:
+	if self.delete_files:
             args.append('--delete_files')
 
         return args
