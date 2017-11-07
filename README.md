@@ -13,6 +13,9 @@ The currently supported frameworks are: Caffe, Torch, and Tensorflow.
 | Docker | Linux | [DockerHub tags](https://hub.docker.com/r/nvidia/digits/tags/) | [nvidia-docker wiki](https://github.com/NVIDIA/nvidia-docker/wiki/DIGITS) |
 | Source | Ubuntu 14.04, 16.04 | [GitHub tags](https://github.com/NVIDIA/DIGITS/releases) | [docs/BuildDigits.md](docs/BuildDigits.md) |
 
+
+To enable DIGITS to interact with S3, follow the instructions at [S3 Integration](docs/S3Installation.md)
+
 # Usage
 
 Once you have installed DIGITS, visit [docs/GettingStarted.md](docs/GettingStarted.md) for an introductory walkthrough.
