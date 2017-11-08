@@ -48,10 +48,31 @@ python upload_mnist.py ~/mnist
 
 Be patient as this upload process will take quite a bit of time to complete, depending heavily on network speed and the computing resources of the S3 endpoint.
 
+When it is complete, all of the keys from the dataset will be uploaded into S3 with the appropriate prefix structure to be used during dataset creation later. For example, in the above configuration, the files would be located in the bucket "digits" and prefixed with "mnist/train/<0-9>"
 
 ## Creating a Dataset
 
-Next, to get the data from S3, go to S3 tab.
+Now that we have loaded the data into S3, the next step is to create a dataset within DIGITS. On the main screen, click "Images" and then click "Classification".
 
-![Create Dataset](create-dataset.png)
+![New Dataset](new-dataset.png)
+
+
+On the next screen, click on the "Use S3" tab to specify you want the data to be accessed from an S3 endpoint. You will then see the fields in the below image.
+
+The "Training Images" URL and "Bucket Name" may be filled out from the upload configuration fields "endpoint" and "bucket", respectively. The "Training Images Path" consists of the prefix specified during the upload appended by "train/". For our example, it would be "mnist/train/". The access key and secret key are the credentials which will be used to access the data from the S3 endpoint.
+
+
+![S3 Tab](s3-tab.png)
+
+
+Similar to any other dataset, the properties including database backend, image encoding, group name, and dataset name may be specified towards the bottom of the screen. When the dataset has been configured the way you want, click Create.
+
+
+![Dataset Properties](dataset-properties.png)
+
+
+If the job processes correctly, you will see the below in the following screen.
+
+
+![Dataset Creation Completed](complete.png)
 
