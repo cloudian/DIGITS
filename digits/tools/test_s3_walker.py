@@ -48,10 +48,8 @@ def mock_list_bucket(prefix='', delimiter='', marker=''):
 def mock_set_contents_from_filename(self, filename):
     file = open(filename, 'r')
     read = file.read()
-    print 'read= ' + read
     global put_content
     put_content = read
-    print 'put_content= ' + put_content
     file.close()
 
 
@@ -161,6 +159,5 @@ class TestPut():
         file.write(expected_data)
         file.close()
         self.walker.put('bucket', 'key', putData[1])
-        print 'put_content!! = ' + put_content
         assert put_content == expected_data
         os.remove(putData[1])
