@@ -18,10 +18,10 @@ PICKLE_VERSION = 1
 class ParseS3Task(Task):
     """Parses a folder into textfiles"""
 
-    def __init__(self, s3_endpoint, s3_bucket, s3_path, s3_accesskey, s3_secretkey, **kwargs):
+    def __init__(self, s3_endpoint_url, s3_bucket, s3_path, s3_accesskey, s3_secretkey, **kwargs):
         """
         Arguments:
-        s3_endpoint -- endpoint url
+        s3_endpoint_url -- endpoint url
         s3_bucket -- bucekt name
         s3_path -- a path to images
         s3_accesskey -- accesskey
@@ -42,7 +42,7 @@ class ParseS3Task(Task):
         super(ParseS3Task, self).__init__(**kwargs)
         self.pickver_task_parsefolder = PICKLE_VERSION
 
-        self.s3_endpoint = s3_endpoint
+        self.s3_endpoint_url = s3_endpoint_url
         self.s3_bucket = s3_bucket
         self.s3_path = s3_path
         self.s3_accesskey = s3_accesskey
@@ -128,7 +128,7 @@ class ParseS3Task(Task):
         args = [sys.executable, os.path.join(
             os.path.dirname(os.path.abspath(digits.__file__)),
             'tools', 'parse_s3.py'),
-            self.s3_endpoint,
+            self.s3_endpoint_url,
             self.s3_bucket,
             self.s3_path,
             self.s3_accesskey,

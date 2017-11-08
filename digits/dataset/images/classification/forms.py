@@ -373,7 +373,7 @@ class ImageClassificationDatasetForm(ImageDatasetForm):
     # Method - S3
     #
 
-    s3_endpoint = utils.forms.StringField(
+    s3_endpoint_url = utils.forms.StringField(
         u'Training Images',
         tooltip=('S3 end point URL'),
     )

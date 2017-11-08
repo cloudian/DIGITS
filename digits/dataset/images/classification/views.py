@@ -285,7 +285,7 @@ def from_s3(job, form):
 
     parse_train_task = tasks.ParseS3Task(
         job_dir=job.dir(),
-        s3_endpoint=form.s3_endpoint.data,
+        s3_endpoint_url=form.s3_endpoint.data,
         s3_bucket=form.s3_bucket.data,
         s3_path=form.s3_path.data,
         s3_accesskey=form.s3_accesskey.data,

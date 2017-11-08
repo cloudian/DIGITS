@@ -5,6 +5,9 @@ import sys
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 from boto.s3.prefix import Prefix
+import logging
+
+logger = logging.getLogger('digits.tools.s3_walker')
 
 
 class S3Walker(object):
@@ -25,9 +28,7 @@ class S3Walker(object):
         self.secretkey = secretkey
         self.conn = None
 
-        print('host: ' + self.host)
-        print('is secure: ' + str(self.is_secure))
-        print('port: ' + str(self.port))
+        logger.info('Host %s is secure: %s port: %s.' % (self.host, str(self.is_secure), str(self.port)))
 
     def connect(self):
 
@@ -66,7 +67,7 @@ class S3Walker(object):
 
     def listbucket(self, bucket, prefix='', max_size=1000, marker='', with_prefix=False):
 
-        print('listing bucket with prefix = ' + prefix + ', with_prefix = ' + str(with_prefix))
+        logger.info('listing bucket with prefix = ' + prefix + ', with_prefix = ' + str(with_prefix))
 
         b = self.conn.get_bucket(bucket)
         resultset = b.list(prefix=prefix, delimiter='/', marker=marker)
@@ -79,8 +80,8 @@ class S3Walker(object):
                 keys.append(key.name)
             if len(keys) >= max_size:
                 break
-
-        print('retrieved ' + str(len(keys)) + ' keys from ' + keys[0] + ' to ' + keys[-1])
+        if len(keys) > 0:
+            logger.info('retrieved ' + str(len(keys)) + ' keys from ' + keys[0] + ' to ' + keys[-1])
 
         return keys
 
@@ -93,20 +94,20 @@ if __name__ == "__main__":
     bucket = sys.argv[4]
     path = sys.argv[5]
 
-    print('endpoint = ' + endpoint)
-    print('bucket = ' + bucket)
-    print('path = ' + path)
+    logger.info('endpoint = ' + endpoint)
+    logger.info('bucket = ' + bucket)
+    logger.info('path = ' + path)
 
     walker = S3Walker(endpoint, accesskey, secretkey)
 
-    print('connecting ...')
+    logger.info('connecting ...')
     walker.connect()
 
-    print('making head ...')
+    logger.info('making head ...')
     k = walker.head(bucket, path)
 
-    print('making list bucket with prefix...')
+    logger.info('making list bucket with prefix...')
     keys = walker.listbucket(bucket, path, with_prefix=True)
 
-    print('making list bucket without prefix...')
+    logger.info('making list bucket without prefix...')
     keys = walker.listbucket(bucket, path)

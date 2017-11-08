@@ -49,12 +49,10 @@ class TestValidateS3():
 
     def test_empty_bucket(self):
         result = parse_s3.validate_s3(self.mock_walker, 'emptybucket', '')
-        print result
         assert not result
 
     def test_valid_endpoint(self):
         result = parse_s3.validate_s3(self.mock_walker, 'validbucket', '')
-        print result
         assert result
 
 

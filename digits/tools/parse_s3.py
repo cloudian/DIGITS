@@ -321,7 +321,6 @@ def parse_s3(walker, bucket, path, labels_file,
         path = path + '/'
     subdirs = []
     digits = walker.listbucket(bucket, prefix=path, with_prefix=True)
-    print len(digits)
     for digit in digits:
         subdirs.append(digit[len(path):])
 
