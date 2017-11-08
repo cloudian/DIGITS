@@ -76,3 +76,5 @@ If the job processes correctly, you will see the below in the following screen.
 
 ![Dataset Creation Completed](complete.png)
 
+
+If you see the above, you have successfully created a dataset from data stored in an S3 endpoint. You may proceed to use this dataset to train model as you would any other.
