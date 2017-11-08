@@ -315,10 +315,10 @@ hasTestFolderChanged();
 
                 <!-- S3 -->
                 <div class="tab-pane" id="db-s3">
-                    <div class="form-group{{mark_errors([form.s3_endpoint])}}">
-                        {{ form.s3_endpoint.label }}
-                        {{ form.s3_endpoint.tooltip }}
-                        {{ form.s3_endpoint(class='form-control', placeholder='S3 Endpoint URL(e.g. https://s3.yourcompany.com:443/)')}}
+                    <div class="form-group{{mark_errors([form.s3_endpoint_url])}}">
+                        {{ form.s3_endpoint_url.label }}
+                        {{ form.s3_endpoint_url.tooltip }}
+                        {{ form.s3_endpoint_url(class='form-control', placeholder='S3 Endpoint URL(e.g. https://s3.yourcompany.com:443/)')}}
                     </div>
                     <div class="form-group{{mark_errors([form.s3_bucket])}}">
                         {{ form.s3_bucket.label }}
